@@ -73,8 +73,7 @@ java -jar target/fruitwarehouse-0.0.1-SNAPSHOT.jar
 ### Документация API
 
 После запуска приложения документация доступна по адресам:
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- OpenAPI спецификация: http://localhost:8080/v3/api-docs
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ### Основные endpoints
 
@@ -82,7 +81,7 @@ java -jar target/fruitwarehouse-0.0.1-SNAPSHOT.jar
 
 - `POST /api/v1/deliveries` — создать новую доставку
 - `GET /api/v1/deliveries/{id}` — получить доставку по ID
-- `GET /api/v1/deliveries` — получить все доставки (последние 30 дней)
+- `GET /api/v1/deliveries` — получить все доставки
 - `GET /api/v1/deliveries/supplier/{supplierId}` — получить доставки поставщика
 
 #### 2. Управление ценами поставщиков (/api/v1/suppliers/{supplierId}/prices)
