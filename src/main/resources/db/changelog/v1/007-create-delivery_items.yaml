@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1-007-create-delivery-items
+      author: system
+      changes:
+        - createTable:
+            tableName: delivery_items
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: delivery_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: weight
+                  type: fruitwarehouse.weight_domain
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_price
+                  type: fruitwarehouse.price_domain
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_price
+                  type: fruitwarehouse.price_domain
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: delivery_items
+            baseColumnNames: delivery_id
+            baseTableSchemaName: fruitwarehouse
+            referencedTableName: deliveries
+            referencedColumnNames: id
+            referencedTableSchemaName: fruitwarehouse
+            constraintName: fk_delivery_items_delivery
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: delivery_items
+            baseColumnNames: product_id
+            baseTableSchemaName: fruitwarehouse
+            referencedTableName: products
+            referencedColumnNames: id
+            referencedTableSchemaName: fruitwarehouse
+            constraintName: fk_delivery_items_product
+
+        - createIndex:
+            indexName: idx_delivery_items_delivery_product
+            tableName: delivery_items
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: delivery_id
+              - column:
+                  name: product_id

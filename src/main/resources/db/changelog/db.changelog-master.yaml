@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - include:
+      file: v1/001-create-schema.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1/002-create-domains.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1/003-create-suppliers.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1/004-create-products.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1/005-create-supplier_product_prices.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1/006-create-deliveries.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1/007-create-delivery_items.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1/008-insert-test-data.yaml
+      relativeToChangelogFile: true
