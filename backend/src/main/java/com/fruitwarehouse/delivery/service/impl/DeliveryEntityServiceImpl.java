@@ -42,6 +42,11 @@ public class DeliveryEntityServiceImpl implements DeliveryEntityService {
 	}
 
 	@Override
+	public List<Delivery> getAll() {
+		return deliveryRepository.findAll();
+	}
+
+	@Override
 	public List<Delivery> getBySupplierIdWithDetails(Long supplierId) {
 		return deliveryRepository.findBySupplierIdWithDetails(supplierId);
 	}

@@ -107,10 +107,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 	public List<DeliveryResponse> getAllDeliveries() {
 		log.info("Getting all deliveries");
 
-		List<Delivery> deliveries = deliveryEntityService.getByDeliveryDateBetween(
-				LocalDateTime.now().minusMonths(1),
-				LocalDateTime.now()
-		);
+		List<Delivery> deliveries = deliveryEntityService.getAll();
 
 		return deliveries.stream()
 				.map(delivery -> {

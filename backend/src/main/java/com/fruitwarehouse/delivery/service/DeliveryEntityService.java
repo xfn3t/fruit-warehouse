@@ -10,6 +10,7 @@ public interface DeliveryEntityService {
 	Delivery getByIdWithItems(Long id);
 	Delivery save(Delivery delivery);
 	List<Delivery> getBySupplierId(Long supplierId);
+	List<Delivery> getAll();
 	List<Delivery> getBySupplierIdWithDetails(Long supplierId);
 	List<Delivery> getByDeliveryDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 }
