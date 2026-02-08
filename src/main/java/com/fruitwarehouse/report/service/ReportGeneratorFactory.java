@@ -1,6 +1,7 @@
 package com.fruitwarehouse.report.service;
 
 import com.fruitwarehouse.report.controller.dto.request.ReportFormat;
+import com.fruitwarehouse.report.service.generator.CsvReportGenerator;
 import com.fruitwarehouse.report.service.generator.JsonReportGenerator;
 import com.fruitwarehouse.report.service.generator.PdfReportGenerator;
 import jakarta.annotation.PostConstruct;
@@ -16,6 +17,7 @@ public class ReportGeneratorFactory {
 
 	private final JsonReportGenerator jsonReportGenerator;
 	private final PdfReportGenerator pdfReportGenerator;
+	private final CsvReportGenerator csvReportGenerator;
 
 	private Map<ReportFormat, ReportGenerator> generators;
 
@@ -24,6 +26,7 @@ public class ReportGeneratorFactory {
 		generators = new EnumMap<>(ReportFormat.class);
 		generators.put(ReportFormat.JSON, jsonReportGenerator);
 		generators.put(ReportFormat.PDF, pdfReportGenerator);
+		generators.put(ReportFormat.CSV, csvReportGenerator);
 	}
 
 	public ReportGenerator getGenerator(ReportFormat format) {
