@@ -1,0 +1,156 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1-006-001-create-delivery-statuses
+      author: system
+      changes:
+        - createTable:
+            tableName: delivery_statuses
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sort_order
+                  type: INTEGER
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            indexName: idx_delivery_statuses_code
+            tableName: delivery_statuses
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: code
+
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.delivery_statuses (code, name, description, sort_order) VALUES
+              ('CREATED', 'Создана', 'Поставка создана, ожидает обработки', 1),
+              ('IN_PROGRESS', 'В обработке', 'Поставка находится в процессе обработки', 2),
+              ('COMPLETED', 'Завершена', 'Поставка успешно завершена', 3),
+              ('CANCELLED', 'Отменена', 'Поставка отменена', 4);
+
+  - changeSet:
+      id: v1-006-002-create-deliveries
+      author: system
+      changes:
+        - createTable:
+            tableName: deliveries
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: supplier_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: delivery_number
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: delivery_date
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: deliveries
+            baseColumnNames: supplier_id
+            baseTableSchemaName: fruitwarehouse
+            referencedTableName: suppliers
+            referencedColumnNames: id
+            referencedTableSchemaName: fruitwarehouse
+            constraintName: fk_deliveries_supplier
+            onDelete: RESTRICT
+
+        - addForeignKeyConstraint:
+            baseTableName: deliveries
+            baseColumnNames: status_id
+            baseTableSchemaName: fruitwarehouse
+            referencedTableName: delivery_statuses
+            referencedColumnNames: id
+            referencedTableSchemaName: fruitwarehouse
+            constraintName: fk_deliveries_status
+            onDelete: RESTRICT
+
+        - createIndex:
+            indexName: idx_deliveries_delivery_date
+            tableName: deliveries
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: delivery_date
+
+        - createIndex:
+            indexName: idx_deliveries_supplier
+            tableName: deliveries
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: supplier_id
+
+        - createIndex:
+            indexName: idx_deliveries_status
+            tableName: deliveries
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: status_id
+
+        - createIndex:
+            indexName: idx_deliveries_delivery_number
+            tableName: deliveries
+            schemaName: fruitwarehouse
+            columns:
+              - column:
+                  name: delivery_number

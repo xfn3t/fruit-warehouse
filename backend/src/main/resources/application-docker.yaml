@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/fruitwarehouse}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: ${SPRING_JPA_HIBERNATE_DEFAULT_SCHEMA:fruitwarehouse}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+  liquibase:
+    liquibase-schema: public
+    default-schema: ${SPRING_JPA_HIBERNATE_DEFAULT_SCHEMA:fruitwarehouse}
+    change-log: classpath:/db/changelog/db.changelog-master.yaml

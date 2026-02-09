@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1-002-create-domains
+      author: system
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: false
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (
+                  SELECT 1
+                  FROM pg_type
+                  WHERE typname = 'price_domain'
+                    AND typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'fruitwarehouse')
+                ) THEN
+                  CREATE DOMAIN fruitwarehouse.price_domain AS DECIMAL(10,2) CHECK (VALUE > 0);
+                END IF;
+              END $$;
+
+        - sql:
+            splitStatements: false
+            stripComments: false
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (
+                  SELECT 1
+                  FROM pg_type
+                  WHERE typname = 'weight_domain'
+                    AND typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'fruitwarehouse')
+                ) THEN
+                  CREATE DOMAIN fruitwarehouse.weight_domain AS DECIMAL(10,3) CHECK (VALUE > 0);
+                END IF;
+              END $$;

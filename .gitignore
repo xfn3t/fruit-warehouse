@@ -1,0 +1,102 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+target/
+**/target/
+
+# Maven
+.mvn/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+*.lock
+*.sock
+*.swp
+*.tmp
+*.cache
+*.env.local
+*.env.*.local
+
+# IDE
+## STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+## IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+
+## NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+## VS Code
+.vscode/
+.history/
+
+# Логи
+logs/
+*.log.*
+
+# Операционная система
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Конфигурационные файлы
+.env.local
+.env.*.local
+.env
+!env.example
+!env.example.local
+!env.example.*
+!.env.example
+
+# Docker Compose
+docker-compose.override.yml
+docker-compose.*.override.yml
+
+# Тесты
+**/test-output/
+**/test-reports/
+**/test-results/
+**/build/reports/
+**/build/test-results/
+
+# Кэш
+**/node_modules/
+**/.cache/
+**/.gradle/
+**/.m2/
