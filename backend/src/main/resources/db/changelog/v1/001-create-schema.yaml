@@ -1,0 +1,7 @@
+databaseChangeLog:
+- changeSet:
+    id: v1-001-create-schema
+    author: system
+    changes:
+      - sql:
+          sql: CREATE SCHEMA IF NOT EXISTS fruitwarehouse;

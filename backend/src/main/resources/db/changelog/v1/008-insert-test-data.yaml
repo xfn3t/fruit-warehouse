@@ -1,0 +1,227 @@
+databaseChangeLog:
+  # --- Вставка поставщиков (suppliers) ---
+  - changeSet:
+      id: v1-008-001-insert-suppliers
+      author: system
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.suppliers (name, contact_email, phone_number)
+              VALUES
+              ('ЭкоФрукт', 'ecofruit@example.com', '+7 (111) 111-11-11'),
+              ('ФруктЛэнд', 'fruitland@example.com', '+7 (222) 222-22-22'),
+              ('Сады России', 'sadyrossii@example.com', '+7 (333) 333-33-33');
+
+  # --- Вставка продуктов (только яблоки и груши) ---
+  - changeSet:
+      id: v1-008-002-insert-products
+      author: system
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.products (name, product_type_id, variety_name, description)
+              SELECT 'Яблоко Голден', pt.id, 'Голден', 'Сладкое желтое яблоко'
+              FROM fruitwarehouse.product_types pt WHERE pt.code = 'APPLE';
+
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.products (name, product_type_id, variety_name, description)
+              SELECT 'Яблоко Фуджи', pt.id, 'Фуджи', 'Хрустящее сладкое яблоко'
+              FROM fruitwarehouse.product_types pt WHERE pt.code = 'APPLE';
+
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.products (name, product_type_id, variety_name, description)
+              SELECT 'Груша Конференция', pt.id, 'Конференция', 'Зимняя груша'
+              FROM fruitwarehouse.product_types pt WHERE pt.code = 'PEAR';
+
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.products (name, product_type_id, variety_name, description)
+              SELECT 'Груша Вильямс', pt.id, 'Вильямс', 'Сочная летняя груша'
+              FROM fruitwarehouse.product_types pt WHERE pt.code = 'PEAR';
+
+  # --- Вставка цен поставщиков ---
+  - changeSet:
+      id: v1-008-003-insert-supplier-product-prices
+      author: system
+      changes:
+        - sql:
+            sql: |
+              -- ЭкоФрукт: цены на яблоки и груши
+              INSERT INTO fruitwarehouse.supplier_product_prices (supplier_id, product_id, price, effective_from, effective_to)
+              SELECT 
+                s.id,
+                p.id,
+                CASE 
+                  WHEN p.variety_name = 'Голден' THEN 70.00
+                  WHEN p.variety_name = 'Фуджи' THEN 85.00
+                  WHEN p.variety_name = 'Конференция' THEN 115.00
+                  WHEN p.variety_name = 'Вильямс' THEN 120.00
+                END,
+                '2025-01-01',
+                '2025-12-31'
+              FROM fruitwarehouse.suppliers s, fruitwarehouse.products p
+              WHERE s.name = 'ЭкоФрукт' 
+              AND p.variety_name IN ('Голден', 'Фуджи', 'Конференция', 'Вильямс');
+
+        - sql:
+            sql: |
+              -- ФруктЛэнд: цены на яблоки и груши
+              INSERT INTO fruitwarehouse.supplier_product_prices (supplier_id, product_id, price, effective_from, effective_to)
+              SELECT 
+                s.id,
+                p.id,
+                CASE 
+                  WHEN p.variety_name = 'Голден' THEN 72.00
+                  WHEN p.variety_name = 'Фуджи' THEN 88.00
+                  WHEN p.variety_name = 'Конференция' THEN 118.00
+                  WHEN p.variety_name = 'Вильямс' THEN 125.00
+                END,
+                '2025-01-01',
+                '2025-12-31'
+              FROM fruitwarehouse.suppliers s, fruitwarehouse.products p
+              WHERE s.name = 'ФруктЛэнд' 
+              AND p.variety_name IN ('Голден', 'Фуджи', 'Конференция', 'Вильямс');
+
+        - sql:
+            sql: |
+              -- Сады России: цены на яблоки и груши
+              INSERT INTO fruitwarehouse.supplier_product_prices (supplier_id, product_id, price, effective_from, effective_to)
+              SELECT 
+                s.id,
+                p.id,
+                CASE 
+                  WHEN p.variety_name = 'Голден' THEN 68.00
+                  WHEN p.variety_name = 'Фуджи' THEN 82.00
+                  WHEN p.variety_name = 'Конференция' THEN 110.00
+                  WHEN p.variety_name = 'Вильямс' THEN 115.00
+                END,
+                '2025-01-01',
+                '2025-12-31'
+              FROM fruitwarehouse.suppliers s, fruitwarehouse.products p
+              WHERE s.name = 'Сады России' 
+              AND p.variety_name IN ('Голден', 'Фуджи', 'Конференция', 'Вильямс');
+
+  # --- Вставка поставок с UUID ---
+  - changeSet:
+      id: v1-008-004-insert-deliveries
+      author: system
+      changes:
+        - sql:
+            sql: |
+              -- Поставки от ЭкоФрукт
+              INSERT INTO fruitwarehouse.deliveries (supplier_id, delivery_number, delivery_date, status_id)
+              SELECT 
+                s.id,
+                gen_random_uuid(),
+                '2025-01-15 10:00:00',
+                ds.id
+              FROM fruitwarehouse.suppliers s, fruitwarehouse.delivery_statuses ds
+              WHERE s.name = 'ЭкоФрукт' AND ds.code = 'COMPLETED';
+
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.deliveries (supplier_id, delivery_number, delivery_date, status_id)
+              SELECT 
+                s.id,
+                gen_random_uuid(),
+                '2025-01-20 11:30:00',
+                ds.id
+              FROM fruitwarehouse.suppliers s, fruitwarehouse.delivery_statuses ds
+              WHERE s.name = 'ФруктЛэнд' AND ds.code = 'COMPLETED';
+
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.deliveries (supplier_id, delivery_number, delivery_date, status_id)
+              SELECT 
+                s.id,
+                gen_random_uuid(),
+                '2025-01-25 09:15:00',
+                ds.id
+              FROM fruitwarehouse.suppliers s, fruitwarehouse.delivery_statuses ds
+              WHERE s.name = 'Сады России' AND ds.code = 'COMPLETED';
+
+  # --- Вставка позиций поставок ---
+  - changeSet:
+      id: v1-008-005-insert-delivery-items
+      author: system
+      changes:
+        - sql:
+            sql: |
+              -- Поставка от ЭкоФрукт: яблоки Голден и груши Конференция
+              INSERT INTO fruitwarehouse.delivery_items (delivery_id, product_id, weight, unit_price, total_price)
+              SELECT 
+                d.id,
+                p.id,
+                150.500,
+                spp.price,
+                150.500 * spp.price
+              FROM fruitwarehouse.deliveries d
+              CROSS JOIN fruitwarehouse.products p
+              JOIN fruitwarehouse.supplier_product_prices spp ON spp.supplier_id = d.supplier_id AND spp.product_id = p.id
+              JOIN fruitwarehouse.suppliers s ON s.id = d.supplier_id
+              WHERE s.name = 'ЭкоФрукт'
+              AND p.variety_name = 'Голден'
+              AND spp.effective_from <= '2025-01-15' AND (spp.effective_to >= '2025-01-15' OR spp.effective_to IS NULL)
+              AND d.delivery_date = '2025-01-15 10:00:00'
+              LIMIT 1;
+
+        - sql:
+            sql: |
+              INSERT INTO fruitwarehouse.delivery_items (delivery_id, product_id, weight, unit_price, total_price)
+              SELECT 
+                d.id,
+                p.id,
+                200.250,
+                spp.price,
+                200.250 * spp.price
+              FROM fruitwarehouse.deliveries d
+              CROSS JOIN fruitwarehouse.products p
+              JOIN fruitwarehouse.supplier_product_prices spp ON spp.supplier_id = d.supplier_id AND spp.product_id = p.id
+              JOIN fruitwarehouse.suppliers s ON s.id = d.supplier_id
+              WHERE s.name = 'ЭкоФрукт'
+              AND p.variety_name = 'Конференция'
+              AND spp.effective_from <= '2025-01-15' AND (spp.effective_to >= '2025-01-15' OR spp.effective_to IS NULL)
+              AND d.delivery_date = '2025-01-15 10:00:00'
+              LIMIT 1;
+
+        - sql:
+            sql: |
+              -- Поставка от ФруктЛэнд: яблоки Фуджи
+              INSERT INTO fruitwarehouse.delivery_items (delivery_id, product_id, weight, unit_price, total_price)
+              SELECT 
+                d.id,
+                p.id,
+                180.300,
+                spp.price,
+                180.300 * spp.price
+              FROM fruitwarehouse.deliveries d
+              CROSS JOIN fruitwarehouse.products p
+              JOIN fruitwarehouse.supplier_product_prices spp ON spp.supplier_id = d.supplier_id AND spp.product_id = p.id
+              JOIN fruitwarehouse.suppliers s ON s.id = d.supplier_id
+              WHERE s.name = 'ФруктЛэнд'
+              AND p.variety_name = 'Фуджи'
+              AND spp.effective_from <= '2025-01-20' AND (spp.effective_to >= '2025-01-20' OR spp.effective_to IS NULL)
+              AND d.delivery_date = '2025-01-20 11:30:00'
+              LIMIT 1;
+
+        - sql:
+            sql: |
+              -- Поставка от Сады России: груши Вильямс
+              INSERT INTO fruitwarehouse.delivery_items (delivery_id, product_id, weight, unit_price, total_price)
+              SELECT 
+                d.id,
+                p.id,
+                175.500,
+                spp.price,
+                175.500 * spp.price
+              FROM fruitwarehouse.deliveries d
+              CROSS JOIN fruitwarehouse.products p
+              JOIN fruitwarehouse.supplier_product_prices spp ON spp.supplier_id = d.supplier_id AND spp.product_id = p.id
+              JOIN fruitwarehouse.suppliers s ON s.id = d.supplier_id
+              WHERE s.name = 'Сады России'
+              AND p.variety_name = 'Вильямс'
+              AND spp.effective_from <= '2025-01-25' AND (spp.effective_to >= '2025-01-25' OR spp.effective_to IS NULL)
+              AND d.delivery_date = '2025-01-25 09:15:00'
+              LIMIT 1;
